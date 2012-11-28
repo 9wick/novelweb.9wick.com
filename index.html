@@ -1,14 +1,84 @@
-<!--
-To change this template, choose Tools | Templates
-and open the template in the editor.
--->
 <!DOCTYPE html>
 <html>
     <head>
-        <title></title>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>
+        </title>
+        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/jquery.mobile/1.1.1/jquery.mobile-1.1.1.min.css" />
+        <link rel="stylesheet" href="my.css" />
+        <style>
+            /* App custom styles */
+        </style>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js">
+        </script>
+        <script src="https://ajax.aspnetcdn.com/ajax/jquery.mobile/1.1.1/jquery.mobile-1.1.1.min.js">
+        </script>
+        <script src="my.js">
+        </script>
     </head>
     <body>
-        <div>TODO write content</div>
+        <!-- Home -->
+        <div data-role="page" id="page1">
+            <div data-role="content">
+                <h2>
+                    小説サイト一覧
+                </h2>
+                <ul data-role="listview" data-divider-theme="b" data-inset="true">
+                    <li data-role="list-divider" role="heading">
+                        小説を読もう
+                    </li>
+                    <li data-theme="c">
+                        <a href="http://yomou.syosetu.com" data-transition="slide">
+                            トップページ
+                        </a>
+                    </li>
+                    <li data-theme="c">
+                        <a href="http://yomou.syosetu.com/rank/top/" data-transition="slide">
+                            ランキング
+                        </a>
+                    </li>
+                </ul>
+                <ul data-role="listview" data-divider-theme="b" data-inset="true">
+                    <li data-role="list-divider" role="heading">
+                        ノクターンノベルズ
+                    </li>
+                    <li data-theme="c">
+                        <a href="http://noc.syosetu.com" data-transition="slide">
+                            トップページ
+                        </a>
+                    </li>
+                </ul>
+                <ul data-role="listview" data-divider-theme="b" data-inset="true">
+                    <li data-role="list-divider" role="heading">
+                        ムーンライトノベルズ
+                    </li>
+                    <li data-theme="c">
+                        <a href="http://mnlt.syosetu.com" data-transition="slide">
+                            トップページ
+                        </a>
+                    </li>
+                </ul>
+                
+                <ul data-role="listview" data-divider-theme="b" data-inset="true">
+                    <li data-role="list-divider" role="heading">
+                        ハーメルン
+                    </li>
+                    <li data-theme="c">
+                        <a href="http://syosetu.org" data-transition="slide">
+                            トップページ
+                        </a>
+                    </li>
+                    <li data-theme="c">
+                        <a href="http://syosetu.org/?mode=rank" data-transition="slide">
+                            ランキング
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <script>
+            //App custom javascript
+        </script>
     </body>
 </html>
