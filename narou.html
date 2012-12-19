@@ -11,54 +11,161 @@
         <link rel="stylesheet" href="my.css" />
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
         <script src="https://ajax.aspnetcdn.com/ajax/jquery.mobile/1.1.1/jquery.mobile-1.1.1.min.js"></script>
+        <script src="http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
+        <script src="jquery.xdomainajax.js"></script>
         <script src="my.js"></script>
     </head>
     <body>
         <!-- Home -->
-        <div data-role="page" id="page1">
+        <div data-role="page" id="page-list">
             <div data-role="content">
                 <h2>
-                    小説家になろう　日間ランキング
+                    小説家になろう<br/>日間ランキング
                 </h2>
-                <ul data-role="listview" data-divider-theme="b" data-inset="true">
-                    <li data-theme="c">
-                        <a href="http://yomou.syosetu.com" data-transition="slide">
-                            小説を読もう（トップページ）
-                        </a>
-                    </li>
+                <p id="loading">ロード中...</p>
+                <ul data-role="listview" data-divider-theme="b" data-inset="false"  id="results">
+
                 </ul>
 
             </div>
         </div>
-        <script>
-          
-            
-            var target_url = "http://yomou.syosetu.com/rank/list/type/daily_total/";
-            var httpObj;
-            if(window.XMLHttpRequest) {
-                httpObj = new XMLHttpRequest();
-            } else if(window.ActiveXObject) {
-                httpObj = new ActiveXObject("Microsoft.XMLHTTP");
-            } else {
-                httpObj = false;
+        <script id="resultsTemplate" type="text/x-jquery-tmpl">
+        <li data-theme="c">
+            <a href="#page-detail" onclick="setPage(${index});" data-transition="slide">
+                <div style="font-size: xx-small;text-align: right;height: 10px;">
+                    <div style="display: inline-block;margin-left: auto;color:${continueStringColor};">
+                        ${continueString}
+                    </div>
+                </div>
+                <div>
+                    <div style="display:  inline-block; width: 200px;overflow: hidden; color:#FD6532;">
+                        ${title}
+                    </div>
+                    <div style="display:  inline-block; text-align: right;width: 60px;overflow: hidden;">
+                        ${storyCount}
+                    </div>
+                </div>
+                <div style="font-size: x-small">
+                    <div style="display:  inline-block; width: 110px;overflow: hidden; ">
+                        ${writer}
+                    </div>
+                    <div style="display:  inline-block; width: 50px">
+                        ${genre}
+                    </div>
+                    <div style="display:  inline-block; text-align: right; width: 100px">
+                        ${updatedDate}
+                    </div>
+                </div>
+            </a>
+        </li>
+    </script>
+
+
+    <div data-role="page" id="page-detail">
+        <div data-role="content" id="detail">
+
+
+        </div>
+    </div>
+    <script id="detailTemplate" type="text/x-jquery-tmpl">
+        <div data-role="content" id="detail" style="margine-left:20px;width:280px;">
+
+            <div style="font-size: xx-small;text-align: right;height: 10px;">
+                <div style="display: inline-block;margin-left: auto;color:${continueStringColor};">
+                    ${continueString}
+                </div>
+            </div>
+            <div>
+                <div style="display:  inline-block; width: 220px;overflow: hidden; color:#FD6532;">
+                    ${title}
+                </div>
+                <div style="display:  inline-block; text-align: right;width: 60px;overflow: hidden;">
+                    ${storyCount}
+                </div>
+            </div>
+            <div style="font-size: x-small">
+                <div style="display:  inline-block; width: 110px;overflow: hidden; ">
+                    ${writer}
+                </div>
+                <div style="display:  inline-block; width: 70px">
+                    ${genre}
+                </div>
+                <div style="display:  inline-block; text-align: right; width: 90px">
+                    ${updatedDate}
+                </div>
+            </div>
+            <div style="width:280px;margine-top:30px;">
+                ${description}
+            </div>
+            <div  >
+                <a href="" style="width:320px;" data-role="button" onclick="NVTimer.currentUrl='${link}';NVTimer.currentTitle='${title}';document.location='nv://taphold';return false;" data-transition="slide">ダウンロード</a>
+            </div>
+        </div>
+    </script>
+    <script>
+        var contentObj ="";  
+        var links,descriptions,writers,storyCounts,genres;
+        $(document).ready(function(){  
+            $.ajax({  
+                url: 'http://yomou.syosetu.com/rank/list/type/daily_total/', 
+                type: 'GET',  
+                success: function(res) {  
+      
+                    contentObj = $(res.responseText).find('div.ranking_inbox');
+                    links = contentObj.find('a[target="_blank"]');
+                    descriptions = contentObj.find('div.ex');
+                    writers = contentObj.find('a[href^="http://mypage.syosetu.com/"]');
+                    storyCounts = contentObj.find('div[style="width:90px;"] p');
+                    genres = contentObj.find('a[href^="/search.php?genre="]');
+                    updatedStrings =  contentObj.find('td:not(*[valign="top"]) > p');
+                        
+                    var count = links.length;
+                    for(var i = 0; i < count; i++){
+                        var args = {
+                            index : i,
+                            link : $(links[i]).attr('href'),
+                            continueString : $(storyCounts[i]).text().slice(0,3),
+                            title : $(links[i]).text(),
+                            storyCount : '全' + $(storyCounts[i]).text().slice(3).trim().slice(2,-3) + '話',
+                            writer : $(writers[i]).text(),
+                            genre : $(genres[i]).text(),
+                            updatedDate : $(updatedStrings[i]).text().slice(6,19)
+                        };
+                        if(args.continueString == '連載中'){
+                            args.continueStringColor = 'blue';
+                        }else{
+                            args.continueStringColor = 'red';
+                        }
+                        $( "#resultsTemplate").tmpl(args).appendTo( "#results" )
+                    }
+                    $('#loading').hide();
+                    $('#results').listview('refresh');
+                }  
+      
+            });  
+  
+        });  
+    
+        function setPage(i){
+            var args = {
+                index : i,
+                link : $(links[i]).attr('href'),
+                continueString : $(storyCounts[i]).text().slice(0,3),
+                title : $(links[i]).text(),
+                storyCount : '全' + $(storyCounts[i]).text().slice(3).trim().slice(2,-3) + '話',
+                writer : $(writers[i]).text(),
+                genre : $(genres[i]).text(),
+                updatedDate : $(updatedStrings[i]).text().slice(6,19),
+                description : $(descriptions[i]).text()
+            };
+            if(args.continueString == '連載中'){
+                args.continueStringColor = 'blue';
+            }else{
+                args.continueStringColor = 'red';
             }
-            if(! httpObj) {
-                httpObjGenerateFail();
-            }
- 
-            //	データを取得する
-            httpObj.open("GET", target_url, true);
-            httpObj.onreadystatechange = DataRead;
-            httpObj.send(null);
-            //return;
- 
-            function DataRead() {
-                if (httpObj.readyState == 4 && httpObj.status == 200){
-                    var getText=httpObj.responseText;
-                    var contentsObj = $(getText).find('div.ranking_inbox');
-                    document.write(contentsObj.text());
-                }
-            }
-        </script>
-    </body>
+            $('#detail').replaceWith( $( "#detailTemplate").tmpl(args));
+        }
+
+    </script>
+</body>
 </html>
