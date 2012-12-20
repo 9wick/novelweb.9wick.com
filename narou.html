@@ -68,6 +68,7 @@
         </div>
     </div>
     <script id="detailTemplate" type="text/x-jquery-tmpl">
+        <div data-role="page" id="page-detail">
         <div data-role="content" id="detail" style="margine-left:20px;width:280px;">
 
             <div style="font-size: xx-small;text-align: right;height: 10px;">
@@ -97,10 +98,11 @@
             <div style="width:280px;margine-top:30px;">
                 ${description}
             </div>
-            <div  >
+            <div data-role="footer" data-position="fixed">
                 <a href="" style="width:320px;" data-role="button" onclick="NVTimer.currentUrl='${link}';NVTimer.currentTitle='${title}';document.location='nv://taphold';return false;" data-transition="slide">ダウンロード</a>
             </div>
         </div>
+    </div>
     </script>
     <script>
         var contentObj ="";  
@@ -163,7 +165,8 @@
             }else{
                 args.continueStringColor = 'red';
             }
-            $('#detail').replaceWith( $( "#detailTemplate").tmpl(args));
+            $('#page-detail').replaceWith( $( "#detailTemplate").tmpl(args));
+            $('#page-detail').trigger('create');
         }
 
     </script>
