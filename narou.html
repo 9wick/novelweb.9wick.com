@@ -74,40 +74,40 @@
     </div>
     <script id="detailTemplate" type="text/x-jquery-tmpl">
         <div data-role="page" id="page-detail">
-        <div data-role="content" id="detail" style="margine-left:20px;width:280px;">
-
-            <div style="font-size: xx-small;text-align: right;height: 10px;">
-                <div style="display: inline-block;margin-left: auto;color:${continueStringColor};">
-                    ${continueString}
+            <div data-role="content" id="detail" style="margine-left:20px;width:280px;padding-bottom:40px;">
+                
+                <div style="font-size: xx-small;text-align: right;height: 10px;">
+                    <div style="display: inline-block;margin-left: auto;color:${continueStringColor};">
+                        ${continueString}
+                    </div>
                 </div>
-            </div>
-            <div>
-                <div style="display:  inline-block; width: 220px;overflow: hidden; color:#FD6532;">
-                    ${title}
+                <div>
+                    <div style="display:  inline-block; width: 220px;overflow: hidden; color:#FD6532;">
+                        ${title}
+                    </div>
+                    <div style="display:  inline-block; text-align: right;width: 60px;overflow: hidden;">
+                        ${storyCount}
+                    </div>
                 </div>
-                <div style="display:  inline-block; text-align: right;width: 60px;overflow: hidden;">
-                    ${storyCount}
+                <div style="font-size: x-small">
+                    <div style="display:  inline-block; width: 110px;overflow: hidden; ">
+                        ${writer}
+                    </div>
+                    <div style="display:  inline-block; width: 70px">
+                        ${genre}
+                    </div>
+                    <div style="display:  inline-block; text-align: right; width: 90px">
+                        ${updatedDate}
+                    </div>
                 </div>
-            </div>
-            <div style="font-size: x-small">
-                <div style="display:  inline-block; width: 110px;overflow: hidden; ">
-                    ${writer}
+                <div style="width:280px;margine-top:30px;">
+                    ${description}
                 </div>
-                <div style="display:  inline-block; width: 70px">
-                    ${genre}
-                </div>
-                <div style="display:  inline-block; text-align: right; width: 90px">
-                    ${updatedDate}
-                </div>
-            </div>
-            <div style="width:280px;margine-top:30px;">
-                ${description}
             </div>
             <div data-role="footer" data-position="fixed">
                 <a href="" style="width:320px;" data-role="button" onclick="NVTimer.currentUrl='${link}';NVTimer.currentTitle='${title}';document.location='nv://taphold';return false;" data-transition="slide">ダウンロード</a>
             </div>
         </div>
-    </div>
     </script>
     <script>
         var contentObj ="";  
