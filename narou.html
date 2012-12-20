@@ -10,6 +10,11 @@
         <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/jquery.mobile/1.1.1/jquery.mobile-1.1.1.min.css" />
         <link rel="stylesheet" href="my.css" />
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+        <script>
+            $(document).bind('mobileinit', function(){
+                $.mobile.defaultPageTransition = 'none';  
+              });
+        </script>
         <script src="https://ajax.aspnetcdn.com/ajax/jquery.mobile/1.1.1/jquery.mobile-1.1.1.min.js"></script>
         <script src="http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
         <script src="jquery.xdomainajax.js"></script>
@@ -31,7 +36,7 @@
         </div>
         <script id="resultsTemplate" type="text/x-jquery-tmpl">
         <li data-theme="c">
-            <a href="#page-detail" onclick="setPage(${index});" data-transition="slide">
+            <a href="#page-detail" onclick="setPage(${index});" data-transition="none">
                 <div style="font-size: xx-small;text-align: right;height: 10px;">
                     <div style="display: inline-block;margin-left: auto;color:${continueStringColor};">
                         ${continueString}
