@@ -21,7 +21,7 @@
         </script>
         <script type="text/javascript">
             $(window).ready(function(){
-                isloaded = true; 
+                setTimeout(' isloaded = true; ',2000);
             });
         </script>
        
@@ -30,6 +30,16 @@
         <!-- Home -->
         <div data-role="page" id="page1">
             <div data-role="content">
+                <h2>
+                    解析用データ
+                </h2>
+                <ul data-role="listview" data-divider-theme="b" data-inset="true">
+                    <li data-theme="c">
+                        <a onclick="alert('更新しました');" href="javascript:void(0)" rel="external">
+                            解析用データダウンロード<br/>（2014/2/23更新）
+                        </a>
+                     </li>
+                </ul>
                 <h2>
                     小説サイトリンク集
                 </h2>
