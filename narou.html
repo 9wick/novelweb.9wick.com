@@ -110,35 +110,83 @@
         </div>
     </script>
     <script>
+
+        var contentJson = [];  
         var contentObj ="";  
         var links,descriptions,writers,storyCounts,genres;
+        
+        var genreList = {
+            "101":"異世界〔恋愛〕",
+"102":" 現実世界〔恋愛〕",
+"201":" ハイファンタジー",
+"202":" ローファンタジー",
+"301":" 純文学〔文芸〕",
+"302":" ヒューマンドラマ〔文芸〕",
+"303":" 歴史〔文芸〕",
+"304":" 推理〔文芸〕",
+"305":" ホラー〔文芸〕",
+"306":" アクション〔文芸〕",
+"307":" コメディー〔文芸〕",
+"401":" VRゲーム〔SF〕",
+"402":" 宇宙〔SF〕",
+"403":" 空想科学〔SF〕",
+"404":" パニック〔SF〕",
+"9901":" 童話",
+"9902":" 詩",
+"9903":" エッセイ",
+"9904":" リプレイ",
+"9999":" その他",
+"9801":" ノンジャンル"
+        };
         $(document).ready(function(){  
             $.ajax({  
-                url: 'http://yomou.syosetu.com/rank/list/type/daily_total/', 
+                url: 'http://api.syosetu.com/rank/rankget/?out=json&rtype=20170919-d', 
                 type: 'GET',  
-                success: function(res) {  
-      
-                    contentObj = $(res.responseText).find('div.ranking_inbox');
-                    links = contentObj.find('a[target="_blank"]');
-                    descriptions = contentObj.find('div.ex');
-                    writers = contentObj.find('a[href^="http://mypage.syosetu.com/"]');
-                    storyCounts = contentObj.find('div[style="width:90px;"] p');
-                    genres = contentObj.find('a[href^="/search.php?genre="]');
-                    updatedStrings =  contentObj.find('td:not(*[valign="top"]) > p');
-                        
-                    var count = links.length;
+                dataType: 'json',
+                success: onSuccess
+            });
+  
+        });  
+        function onSuccess(res){
+            var jsonRes = res;
+            var ncodeList = "";
+            var num = 30;
+            for(var i = 0; i<num;i++){
+                contentJson[i] = jsonRes[i];
+                ncodeList = ncodeList + jsonRes[i].ncode +"-";
+   
+            }
+             $.ajax({  
+                url: 'http://api.syosetu.com/novelapi/api/?out=json&ncode=' + ncodeList.slice(0,-1) +"&lim=" +  num, 
+                type: 'GET',  
+                dataType: 'json',
+                success: onSuccess2
+            });
+        }
+        function onSuccess2(res){
+            var jsonRes = res;
+            for(var i=0;i < contentJson.length;i++){
+                 var row = jsonRes.filter(function(item, index){
+                    if (item.ncode !== undefined
+                            && item.ncode.toLowerCase() === contentJson[i].ncode.toLowerCase()) return true;
+                 });
+                if(row.length > 0){
+                   contentJson[i].detail = row[0];
+                }
+            }
+                    var count = contentJson.length;
                     for(var i = 0; i < count; i++){
                         var args = {
                             index : i,
-                            link : $(links[i]).attr('href'),
-                            continueString : $(storyCounts[i]).text().slice(0,3),
-                            title : $(links[i]).text(),
-                            storyCount : '全' + $(storyCounts[i]).text().slice(3).trim().slice(2,-3) + '話',
-                            writer : $(writers[i]).text(),
-                            genre : $(genres[i]).text(),
-                            updatedDate : $(updatedStrings[i]).text().slice(6,19)
+                            link :  "http://ncode.syosetu.com/" + contentJson[i].detail.ncode +"/",
+                            continueString : contentJson[i].detail.end === 1 ? "連載中" : "完結", //$(storyCounts[i]).text().slice(0,3),
+                            title : contentJson[i].detail.title,
+                            storyCount : '全' + contentJson[i].detail.general_all_no + '話',
+                            writer : contentJson[i].detail.writer,
+                            genre : genreList[contentJson[i].detail.genre],
+                            updatedDate : contentJson[i].detail.general_lastup.slice(0,10), //$(updatedStrings[i]).text().slice(6,19)
                         };
-                        if(args.continueString == '連載中'){
+                        if(contentJson[i].detail.end === 1){
                             args.continueStringColor = 'blue';
                         }else{
                             args.continueStringColor = 'red';
@@ -147,25 +195,21 @@
                     }
                     $('#loading').hide();
                     $('#results').listview('refresh');
-                }  
-      
-            });  
-  
-        });  
+        }
     
         function setPage(i){
             var args = {
                 index : i,
-                link : $(links[i]).attr('href'),
-                continueString : $(storyCounts[i]).text().slice(0,3),
-                title : $(links[i]).text(),
-                storyCount : '全' + $(storyCounts[i]).text().slice(3).trim().slice(2,-3) + '話',
-                writer : $(writers[i]).text(),
-                genre : $(genres[i]).text(),
-                updatedDate : $(updatedStrings[i]).text().slice(6,19),
-                description : $(descriptions[i]).text()
+                link :  "http://ncode.syosetu.com/" + contentJson[i].detail.ncode +"/",
+                continueString : contentJson[i].detail.end === 1 ? "連載中" : "完結",
+                title : contentJson[i].detail.title,
+                storyCount : '全' + contentJson[i].detail.general_all_no + '話',
+                writer :  contentJson[i].detail.writer,
+                genre : genreList[contentJson[i].detail.genre],
+                updatedDate : contentJson[i].detail.general_lastup.slice(0,10),
+                description : contentJson[i].detail.story
             };
-            if(args.continueString == '連載中'){
+            if(contentJson[i].detail.end === 1){
                 args.continueStringColor = 'blue';
             }else{
                 args.continueStringColor = 'red';
